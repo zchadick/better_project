@@ -3,15 +3,13 @@ from app import app, host, port, user, passwd, db
 from app.helpers.database import con_db
 from operator import itemgetter
 
-#import numpy as np
-#import matplotlib.pyplot as plt
-#import MySQLdb
 import pymysql
 import sys
 import simplejson
 import urllib2
 import json
 import math
+import jinja2
 
 
 # To create a database connection, add the following
@@ -20,7 +18,7 @@ import math
 
 #from app.helpers.database import con_db, query_db
 #from app.helpers.filters import format_currency
-import jinja2
+
  
 #def get_db():
 #	print "Getting DB"
@@ -49,29 +47,7 @@ import jinja2
 def index():
 	return render_template('index.html')
 
-#@app.route('/product/json/<product_id>')
-#def product_details(product_id):
-#        address = product_id
-#        
-#        # need to add some error checking here
-#        
-#        address = address.replace(' ','+')
-#        address = address + ',+San+Francisco,+CA'
-#        
-#            
-#        url_name = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyClGti21OO4dZ1P-BbQGr-Jezy2qV8zajg'
-#        url_data = urllib2.urlopen(url_name)
-#        
-#        json_string = url_data.read()
-#        parsed_json = json.loads(json_string)
-#        
-#        data = parsed_json['results'][0]
-#        data = data.get('geometry')
-#        data = data.get('location')
-#        lat  = data.get('lat')
-#        lng  = data.get('lng')
-#        
-#        return('YOU ENTERED AN ADDRESS AT %.4f and %.4f\n' % (lat,lng))
+
         
 @app.route('/out', methods=['POST'])
 
@@ -154,8 +130,6 @@ def parse_the_location(p_lat,p_lon):
 
     return {'clo_name':clo_name, 'clo_vals':clo_vals}
         
-
-
 
 @app.route('/home')
 def home():
