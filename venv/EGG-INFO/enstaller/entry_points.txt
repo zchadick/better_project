@@ -1,0 +1,6 @@
+[console_scripts]
+egginst = egginst.main:main
+enpkg = enstaller.main:main_noexc
+enpkg-repair = egginst.repair_broken_egg_info:main
+update-patches = enstaller.patch:main
+

@@ -1,0 +1,10 @@
+metadata_version = '1.1'
+name = 'distribute'
+version = '0.6.49'
+build = 1
+
+arch = 'amd64'
+platform = 'darwin'
+osdist = None
+python = '2.7'
+packages = []

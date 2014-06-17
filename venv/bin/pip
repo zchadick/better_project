@@ -1,0 +1,10 @@
+#!/Users/Shared/insight/project/better_project/venv/bin/python
+# This script was created by egginst when installing:
+#
+#   pip-1.0.2-1.egg
+#
+if __name__ == '__main__':
+    import sys
+    from pip import main
+
+    sys.exit(main())

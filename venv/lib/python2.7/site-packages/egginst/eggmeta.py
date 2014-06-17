@@ -1,0 +1,71 @@
+import json
+import time
+from os.path import join
+
+from egginst.utils import ZipFile
+
+# Path relative to EGG-INFO in egg, or $RPPT/EGG-INFO/$package_name when
+# installed
+APPINST_PATH = join("inst", "appinst.dat")
+
+def parse_rawspec(data):
+    spec = {}
+    exec data.replace('\r', '') in spec
+    res = {}
+    for k in ('name', 'version', 'build',
+              'arch', 'platform', 'osdist', 'python', 'packages'):
+        res[k] = spec[k]
+    return res
+
+
+def info_from_z(z):
+    res = dict(type='egg')
+
+    arcname = 'EGG-INFO/spec/depend'
+    if arcname in z.namelist():
+        res.update(parse_rawspec(z.read(arcname)))
+
+    arcname = 'EGG-INFO/info.json'
+    if arcname in z.namelist():
+        res.update(json.loads(z.read(arcname)))
+
+    res['name'] = res['name'].lower().replace('-', '_')
+    return res
+
+
+def create_info(egg, extra_info=None):
+    info = dict(key=egg.fn)
+    info.update(info_from_z(egg.z))
+    info['ctime'] = time.ctime()
+    info['hook'] = egg.hook
+    if extra_info:
+        info.update(extra_info)
+
+    try:
+        del info['available']
+    except KeyError:
+        pass
+
+    with open(join(egg.meta_dir, '_info.json'), 'w') as fo:
+        json.dump(info, fo, indent=2, sort_keys=True)
+
+    return info
+
+def is_custom_egg(egg):
+    """
+    Return True if the egg is built using Enthought build infrastructure, False
+    otherwise.
+
+    Note
+    ----
+    This is not 100 % reliable, as some Enthought eggs don't always have any
+    specific metadata.
+    """
+    with ZipFile(egg) as zp:
+        for dest in ("spec/depend", "inst/targets.dat"):
+            try:
+                info = zp.getinfo("EGG-INFO/{0}".format(dest))
+                return True
+            except KeyError:
+                pass
+        return False

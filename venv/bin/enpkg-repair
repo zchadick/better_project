@@ -1,0 +1,10 @@
+#!/Users/Shared/insight/project/better_project/venv/bin/python
+# This script was created by egginst when installing:
+#
+#   enstaller-4.6.4-1.egg
+#
+if __name__ == '__main__':
+    import sys
+    from egginst.repair_broken_egg_info import main
+
+    sys.exit(main())

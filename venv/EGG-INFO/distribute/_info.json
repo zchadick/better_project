@@ -1,0 +1,14 @@
+{
+  "arch": "amd64", 
+  "build": 1, 
+  "ctime": "Mon Jun 16 17:58:33 2014", 
+  "hook": false, 
+  "key": "distribute-0.6.49-1.egg", 
+  "name": "distribute", 
+  "osdist": null, 
+  "packages": [], 
+  "platform": "darwin", 
+  "python": "2.7", 
+  "type": "egg", 
+  "version": "0.6.49"
+}
