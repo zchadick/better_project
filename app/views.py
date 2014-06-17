@@ -119,6 +119,14 @@ def parse_the_location(p_lat,p_lon):
         test5.append(r[4])
 
     p_dist = []
+    
+    # sorted(data,key = lambda x: x[2])
+    # def finemin(tup)
+    #   minTup = None
+    #   for t in tup:
+    #       if minTup == None or t[2] < minTup[2]
+    #           minTup = t
+    #   return minTup
 
     for x in range(0,len(test1)):
         p_dist.append(math.sqrt(math.pow(test3[x]-p_lat,2)+math.pow(test4[x]-p_lon,2)))
