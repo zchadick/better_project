@@ -1,0 +1,5 @@
+$(function () {
+	$("#fetch_product_button").click(function() {
+		alert("Stop it");
+	    });
+});
