@@ -75,8 +75,15 @@ def out():
         lng  = data.get('lng')
 
         dat      = parse_the_location(lat,lng)
-        clo_name = dat.get('clo_name')
-        clo_vals = dat.get('clo_vals')
+        db_id    = dat.get('db_id')
+        db_name  = dat.get('db_name')
+        db_lat   = dat.get('db_lat')
+        db_lon   = dat.get('db_lon')
+        ind      = dat.get('ind')
+        clo_name = db_name[ind]
+        clo_vals = db_id[ind]
+        clo_lat  = db_lat[ind]
+        clo_lon  = db_lon[ind]
 
         if ((37.7651185 > lat > 37.7529621) & (-122.4176042 < lng < -122.4066062)): 
             t_text  = ('GOOD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n VALUE WILL GO UP $1243 IN 3 MONTHS \n' % (lat,lng))
@@ -89,9 +96,11 @@ def out():
             lo_data = lng
             valid   = True
 
-        out_text = ('closest point was in the {0} with value of {1}'.format(clo_name,clo_vals))
+        out_text = ('closest point was {0} <br> with value of {1}'.format(clo_name,clo_vals))
         
-        return render_template('index.html',t_dat = t_text,la_data = la_data, lo_data = lo_data, valid = valid, out_text = out_text)
+        return render_template('index.html',t_dat   = t_text,  la_data  = la_data,  lo_data = lo_data, 
+                                            valid   = valid,   out_text = out_text, db_id   = db_id,
+                                            db_name = db_name, db_lat   = db_lat,   db_lon  = db_lon)
         
         
 	#data = query_db(query)
@@ -100,23 +109,21 @@ def out():
 	#return jsonify(reviews = formatted_data)
 	
 def parse_the_location(p_lat,p_lon):
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='website_test')
+    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
     cur  = conn.cursor()
-    cur.execute("SELECT * FROM webtest")
+    cur.execute("SELECT * FROM citypoints")
     data  = cur.fetchall()
 
-    test1 = []
-    test2 = []
-    test3 = []
-    test4 = []
-    test5 = []
+    db_id   = []
+    db_name = []
+    db_lat  = []
+    db_lon  = []
 
     for r in data:
-        test1.append(r[0])
-        test2.append(r[1])
-        test3.append(r[2])
-        test4.append(r[3])
-        test5.append(r[4])
+        db_id.append(r[0])
+        db_name.append(r[1])
+        db_lat.append(r[2])
+        db_lon.append(r[3])
 
     p_dist = []
     
@@ -128,15 +135,12 @@ def parse_the_location(p_lat,p_lon):
     #           minTup = t
     #   return minTup
 
-    for x in range(0,len(test1)):
-        p_dist.append(math.sqrt(math.pow(test3[x]-p_lat,2)+math.pow(test4[x]-p_lon,2)))
+    for x in range(0,len(db_id)):
+        p_dist.append(math.sqrt(math.pow(db_lat[x]-p_lat,2)+math.pow(db_lon[x]-p_lon,2)))
 
     ind = min(enumerate(p_dist), key=itemgetter(1))[0]
 
-    clo_name = test2[ind]
-    clo_vals = test5[ind]
-
-    return {'clo_name':clo_name, 'clo_vals':clo_vals}
+    return {'ind':ind,'db_id':db_id,'db_name':db_name,'db_lat':db_lat,'db_lon':db_lon}
         
 
 @app.route('/home')
