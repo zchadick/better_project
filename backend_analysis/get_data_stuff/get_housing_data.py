@@ -16,7 +16,6 @@ from sf_zipcodes                import zip_code
 from random                     import randint
 from time                       import sleep
 
-
 # find the maximum number of pages available for given zip code
 
 def find_max_pages(soup):
@@ -184,12 +183,12 @@ def process_code(z_code):
         url_data  = urllib2.urlopen(url_name)
         soup      = BeautifulSoup(url_data)
         houses    = soup.findAll('article')
-        
+
         # iterate through house listings
-        
+
         for ihouse in houses:
             parse_somestuff(ihouse)
-        
+
         page_num+=1 # advance page
         session.commit()
         print url_name

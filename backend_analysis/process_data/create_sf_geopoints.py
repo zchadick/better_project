@@ -1,7 +1,6 @@
 # this creates a database of lat-lon pairs bounded by 
 # san francisco boarders (using number_points)
 
-
 import matplotlib.path
 import sqlalchemy
 import numpy as np

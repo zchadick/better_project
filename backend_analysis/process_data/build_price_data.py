@@ -14,7 +14,6 @@ from sqlalchemy.types           import Float, Date
 from sqlalchemy.orm             import sessionmaker
 from dateutil.relativedelta     import relativedelta
 
-
 table_name = 'pricedata'
 
 def get_spacing_information():

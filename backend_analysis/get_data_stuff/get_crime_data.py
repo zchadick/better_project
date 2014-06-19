@@ -178,7 +178,6 @@ class Crime(Base):
         self.daycr,self.timecr,self.typecr,self.beatcr,self.zipcr,self.addre,self.latcr,
         self.loncr,self.acccr,self.urlcr))
         
-        
 # create that table!
         
 Base.metadata.create_all(engine)
