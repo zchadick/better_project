@@ -18,26 +18,26 @@ from dateutil.relativedelta     import relativedelta
 table_name = 'pricedata'
 
 def get_spacing_information():
-	# connect to the database to get how far apart 'points' are
-	conn  = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
-	cur   = conn.cursor()
-	cur.execute("SELECT latitude,longitude FROM citypoints LIMIT 2;")
-	data  = cur.fetchall()
-	conn.close()
+    # connect to the database to get how far apart 'points' are
+    conn  = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
+    cur   = conn.cursor()
+    cur.execute("SELECT latitude,longitude FROM citypoints LIMIT 2;")
+    data  = cur.fetchall()
+    conn.close()
 
-	spacing = max(abs(data[0][1]-data[1][1]),(data[0][0]-data[1][0]))
-	return spacing
+    spacing = max(abs(data[0][1]-data[1][1]),(data[0][0]-data[1][0]))
+    return spacing
 
 def get_timestamps():
-	# connect to the database and get listing of times
-	conn  = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='housedb')
-	cur   = conn.cursor()
-	cur.execute("SELECT DISTINCT h_date from housedb3;")
-	data  = cur.fetchall()
-	conn.close()
+    # connect to the database and get listing of times
+    conn  = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='housedb')
+    cur   = conn.cursor()
+    cur.execute("SELECT DISTINCT h_date from housedb3;")
+    data  = cur.fetchall()
+    conn.close()
 
-	dates = sorted(data,key = lambda x: x[0])
-	return dates
+    dates = sorted(data,key = lambda x: x[0])
+    return dates
 
 def cycle_through_times(dates,spacing,sql_str1,lat,lon,place_id):
     # connect to the database and start querying
