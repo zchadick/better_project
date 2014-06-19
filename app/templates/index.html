@@ -24,7 +24,7 @@
         <div class="col-md-12">    
             <p>
             <center>
-            <h1>Gentrifi-CRIME-tion</h1>
+            <h1>Steal This House!</h1>
             </p>
         </div>
     </div>
@@ -44,6 +44,10 @@
             <!-- DISPLAY SOME INFORMATION -->
 
             <div>
+                {% if ind %}
+                <img class="img-responsive img-rounded" src="{{ url_for('getPlot',id_num = ind) }}" style="margin-left:auto;margin-right:auto;”/>
+                {% endif %}
+
                 {% if t_dat %}
                 <p>{{t_dat}}</p>
                 {% endif %}
@@ -138,7 +142,7 @@
         google.maps.event.addDomListener(window, 'load', initialize);
         </script> 
 
-        <div id="map-canvas" style="width: 100%; height: 400px;margin-left:auto;margin-right:auto;">
+
         <hr>
     </div>
 
@@ -147,5 +151,6 @@
         </center>
     </div> -->
 </div>
+        <div id="map-canvas" style="width: 100%; height: 400px;margin-left:auto;margin-right:auto;"></div>
 {% endblock %}
 
