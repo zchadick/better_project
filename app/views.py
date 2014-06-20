@@ -27,56 +27,56 @@ def index():
 @app.route('/out', methods=['POST'])
 
 def out():
-        valid = 'False'
+    valid = 'False'
 
-        address = request.form['searchPhrase']
-                
-        # need to add some error checking here
-        
-        address = address.replace(' ','+')
-        address = address + ',+San+Francisco,+CA'
-        
+    address = request.form['searchPhrase']
             
-        url_name = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyClGti21OO4dZ1P-BbQGr-Jezy2qV8zajg'
-        url_data = urllib2.urlopen(url_name)
-        
-        json_string = url_data.read()
-        parsed_json = json.loads(json_string)
-        
-        data = parsed_json['results'][0]
-        data = data.get('geometry')
-        data = data.get('location')
-        lat  = data.get('lat')
-        lng  = data.get('lng')
+    # need to add some error checking here
 
-        dat      = parse_the_location(lat,lng)
-        db_id    = dat.get('db_id')
-        db_name  = dat.get('db_name')
-        db_lat   = dat.get('db_lat')
-        db_lon   = dat.get('db_lon')
-        ind      = dat.get('ind')
-        clo_name = db_name[ind]
-        clo_vals = db_id[ind]
-        clo_lat  = db_lat[ind]
-        clo_lon  = db_lon[ind]
+    address = address.replace(' ','+')
+    address = address + ',+San+Francisco,+CA'
 
-        if ((37.7651185 > lat > 37.7529621) & (-122.4176042 < lng < -122.4066062)): 
-            t_text  = ('GOOD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n VALUE WILL GO UP $1243 IN 3 MONTHS \n' % (lat,lng))
-            la_data = lat
-            lo_data = lng 
-            valid   = True
-        else:
-            t_text  = ('BAD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n' % (lat,lng))
-            la_data = lat
-            lo_data = lng
-            valid   = True
-
-        out_text = ('closest point was {0} <br> with value of {1}'.format(clo_name,clo_vals))
         
-        return render_template('index.html',t_dat   = t_text,  la_data  = la_data,  lo_data = lo_data, 
-                                            valid   = valid,   out_text = out_text, db_id   = db_id,
-                                            db_name = db_name, db_lat   = db_lat,   db_lon  = db_lon,
-                                            ind     = ind)
+    url_name = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyClGti21OO4dZ1P-BbQGr-Jezy2qV8zajg'
+    url_data = urllib2.urlopen(url_name)
+
+    json_string = url_data.read()
+    parsed_json = json.loads(json_string)
+
+    data = parsed_json['results'][0]
+    data = data.get('geometry')
+    data = data.get('location')
+    lat  = data.get('lat')
+    lng  = data.get('lng')
+
+    dat      = parse_the_location(lat,lng)
+    db_id    = dat.get('db_id')
+    db_name  = dat.get('db_name')
+    db_lat   = dat.get('db_lat')
+    db_lon   = dat.get('db_lon')
+    ind      = dat.get('ind')
+    clo_name = db_name[ind]
+    clo_vals = db_id[ind]
+    clo_lat  = db_lat[ind]
+    clo_lon  = db_lon[ind]
+
+    if ((37.7651185 > lat > 37.7529621) & (-122.4176042 < lng < -122.4066062)): 
+        t_text  = ('GOOD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n VALUE WILL GO UP $1243 IN 3 MONTHS \n' % (lat,lng))
+        la_data = lat
+        lo_data = lng 
+        valid   = True
+    else:
+        t_text  = ('BAD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n' % (lat,lng))
+        la_data = lat
+        lo_data = lng
+        valid   = True
+
+    out_text = ('closest point was {0} <br> with value of {1}'.format(clo_name,clo_vals))
+
+    return render_template('index.html',t_dat   = t_text,  la_data  = la_data,  lo_data = lo_data, 
+                                        valid   = valid,   out_text = out_text, db_id   = db_id,
+                                        db_name = db_name, db_lat   = db_lat,   db_lon  = db_lon,
+                                        ind     = ind)
 	
 def parse_the_location(p_lat,p_lon):
     conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
