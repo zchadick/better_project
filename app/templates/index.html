@@ -3,154 +3,135 @@
 {% block head %}
 <style>
     body {
-        overflow-y: auto;
-    }
-#top {
-    margin-top: 60px;
-}
+        overflow-y: auto;}
+    #top {margin-top: 60px;}
 </style>
 {% endblock %}
 
 {% block content %}
-<div id="top" class="container marketing">
-    
-    <!-- START THE FEATURETTES -->
-    
-    <div class="row">
-        <div class="col-md-12">
-
-
-    <div class="row">
-        <div class="col-md-12">    
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="col-md-3" style="height: 600px;overflow-y: auto;margin-top: 60px">
+        <div>    
             <p>
             <center>
             <h1>Steal This House!</h1>
             </p>
         </div>
-    </div>
 
-    <!-- GET THE INPUT -->
-
-    <div class="row">
-        <div class="col-md-3">
-            <form action="/out" method="POST">
-                <br/>
-                ENTER AN ADDRESS: <input type="text" name="searchPhrase">
-                <br/>
-                <br>
-                <input type="submit">
-            </form>
-
-            <!-- DISPLAY SOME INFORMATION -->
-
-            <div>
-                {% if ind %}
-                <img class="img-responsive img-rounded" src="{{ url_for('getPlot',id_num = ind) }}" style="margin-left:auto;margin-right:auto;”/>
-                {% endif %}
-
-                {% if t_dat %}
-                <p>{{t_dat}}</p>
-                {% endif %}
-            </div>
+        <form role="form" action="/out" method="POST">
+        <div class="form-group">
+            <br>
+            <center>
+            ENTER AN ADDRESS: <input class="form-control" type="text" name="searchPhrase">
+            <input class="btn btn-lg btn-block" type="submit">
         </div>
-    
+        </form>
 
-    <!-- RENDER THE MAP -->
+        <div>
+            <center>
+            <img class="img-responsive img-rounded" src="{{ url_for('getPlot',id_num = ind) }}" style="margin-left:auto;margin-right:auto;"/>
 
+            {% if t_dat %}
+                <p><center>{{t_dat}}</p>
+            {% endif %}
+        </div>
+
+    </div>
     <div class="col-md-9">
         <hr>
         <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false&key=AIzaSyCJC3IiY1qVYpksDJ4GnS1C2LwKaOrFazM"></script>
         <script type="text/javascript">
 
-      function initialize() {
-        var mapDiv = document.getElementById('map-canvas');
-        var map = new google.maps.Map(mapDiv, {
-          center: new google.maps.LatLng(37.7563659, -122.4496905),
-          zoom: 12,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
+
+        function initialize() {
+            var mapDiv = document.getElementById('map-canvas');
+            var map = new google.maps.Map(mapDiv, {
+                center: new google.maps.LatLng(37.7563659, -122.4496905),
+                zoom: 12,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
         
-        {% if valid %}
-        var content_string = '<p style="overflow: auto;"><span style="float: left;margin-top: 10px;margin-left: 10px;verticle-align:middle;">THIS IS WHERE<br> OTHER STUFF GOES<br>{{out_text}}</span>  <img style="float:left;" src="{{url_for('static', filename='pictogram.jpg')}}"></p>'
+            {% if valid %}
+                var content_string = '<p style="overflow: auto;"><span style="float: left;margin-top: 10px;margin-left: 10px;verticle-align:middle;">THIS IS WHERE<br> OTHER STUFF GOES<br>{{out_text}}</span>  <img style="float:left;" src="{{url_for('static', filename='pictogram.jpg')}}"></p>'
 
-        var infoWindow = new google.maps.InfoWindow({
-          position: new google.maps.LatLng({{la_data}}, {{lo_data}}),
-          content: content_string
-        });
-        infoWindow.open(map);
-        {% endif %}
-
-
-        var sfpat = [new google.maps.LatLng(37.809812,-122.476634),
-            new google.maps.LatLng(37.797346,-122.481910),
-            new google.maps.LatLng(37.788471,-122.490044),
-            new google.maps.LatLng(37.786681,-122.496047),
-            new google.maps.LatLng(37.787849,-122.502443),
-            new google.maps.LatLng(37.785374,-122.510171),
-            new google.maps.LatLng(37.780344,-122.514118),
-            new google.maps.LatLng(37.772203,-122.514577),
-            new google.maps.LatLng(37.708283,-122.503009),
-            new google.maps.LatLng(37.707944,-122.391354),
-            new google.maps.LatLng(37.708315,-122.380821),
-            new google.maps.LatLng(37.716061,-122.375920),
-            new google.maps.LatLng(37.715668,-122.365390),
-            new google.maps.LatLng(37.728642,-122.358034),
-            new google.maps.LatLng(37.739688,-122.368804),
-            new google.maps.LatLng(37.753637,-122.378594),
-            new google.maps.LatLng(37.788308,-122.387641),
-            new google.maps.LatLng(37.807490,-122.404791),
-            new google.maps.LatLng(37.810019,-122.415333),
-            new google.maps.LatLng(37.804758,-122.462631),
-            new google.maps.LatLng(37.807265,-122.468261)];
+                var infoWindow = new google.maps.InfoWindow({
+                    position: new google.maps.LatLng({{la_data}}, {{lo_data}}),
+                    content: content_string
+                    });
+                infoWindow.open(map);
+            {% endif %}
 
 
-        var shape = new google.maps.Polygon({
-          paths: sfpat,
-          strokeColor: '#ff0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#66ff00',
-          fillOpacity: 0.35
-        });
+            var sfpat = [new google.maps.LatLng(37.809812,-122.476634),
+                new google.maps.LatLng(37.797346,-122.481910),
+                new google.maps.LatLng(37.788471,-122.490044),
+                new google.maps.LatLng(37.786681,-122.496047),
+                new google.maps.LatLng(37.787849,-122.502443),
+                new google.maps.LatLng(37.785374,-122.510171),
+                new google.maps.LatLng(37.780344,-122.514118),
+                new google.maps.LatLng(37.772203,-122.514577),
+                new google.maps.LatLng(37.708283,-122.503009),
+                new google.maps.LatLng(37.707944,-122.391354),
+                new google.maps.LatLng(37.708315,-122.380821),
+                new google.maps.LatLng(37.716061,-122.375920),
+                new google.maps.LatLng(37.715668,-122.365390),
+                new google.maps.LatLng(37.728642,-122.358034),
+                new google.maps.LatLng(37.739688,-122.368804),
+                new google.maps.LatLng(37.753637,-122.378594),
+                new google.maps.LatLng(37.788308,-122.387641),
+                new google.maps.LatLng(37.807490,-122.404791),
+                new google.maps.LatLng(37.810019,-122.415333),
+                new google.maps.LatLng(37.804758,-122.462631),
+                new google.maps.LatLng(37.807265,-122.468261)];
+
+
+            var shape = new google.maps.Polygon({
+                paths: sfpat,
+                strokeColor: '#ff0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#66ff00',
+                fillOpacity: 0.35
+                });
         
-        shape.setMap(map);
+           shape.setMap(map);
        
 
 
 
 
-        var paths = [new google.maps.LatLng(37.7651185, -122.4176042),
-          new google.maps.LatLng(37.7651185, -122.4066062),
-          new google.maps.LatLng(37.7529621, -122.4066062),
-          new google.maps.LatLng(37.7529621, -122.4176042)];
+            var paths = [new google.maps.LatLng(37.7651185, -122.4176042),
+                new google.maps.LatLng(37.7651185, -122.4066062),
+                new google.maps.LatLng(37.7529621, -122.4066062),
+                new google.maps.LatLng(37.7529621, -122.4176042)];
 
-        var shape = new google.maps.Polygon({
-          paths: paths,
-          strokeColor: '#66ff00',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#ff0000',
-          fillOpacity: 0.35
-        });
+            var shape = new google.maps.Polygon({
+                paths: paths,
+                strokeColor: '#66ff00',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#ff0000',
+                fillOpacity: 0.35
+                });
         
-        shape.setMap(map);
-
-
-        }
+            shape.setMap(map);
+            }
 
 
         google.maps.event.addDomListener(window, 'load', initialize);
         </script> 
 
+        <div id="map-canvas" style="width: 100%; height: 600px;margin-left:auto;margin-right:auto;margin-top: 60px;overflow-y: auto;">
+        </div>
 
-        <hr>
+
     </div>
-
-<!--     <div>
-        <img src="{{url_for('static', filename='map_temp.jpg')}}"/ width="100%">
-        </center>
-    </div> -->
+  </div>
 </div>
-        <div id="map-canvas" style="width: 100%; height: 400px;margin-left:auto;margin-right:auto;"></div>
+
 {% endblock %}
 
+{% block footer %}
+  {% include "include/footer.html" %}
+{% endblock %}
