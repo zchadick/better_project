@@ -2,8 +2,7 @@
 
 {% block head %}
 <style>
-    body {
-        overflow-y: auto;}
+    body {overflow-y: auto;}
     #top {margin-top: 60px;}
 </style>
 {% endblock %}
@@ -85,7 +84,6 @@
                 new google.maps.LatLng(37.804758,-122.462631),
                 new google.maps.LatLng(37.807265,-122.468261)];
 
-
             var shape = new google.maps.Polygon({
                 paths: sfpat,
                 strokeColor: '#ff0000',
@@ -96,10 +94,6 @@
                 });
         
            shape.setMap(map);
-       
-
-
-
 
             var paths = [new google.maps.LatLng(37.7651185, -122.4176042),
                 new google.maps.LatLng(37.7651185, -122.4066062),
@@ -117,7 +111,6 @@
         
             shape.setMap(map);
             }
-
 
         google.maps.event.addDomListener(window, 'load', initialize);
         </script> 

@@ -19,6 +19,7 @@ import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.path
 
 @app.route('/')
 def index():
@@ -35,8 +36,7 @@ def out():
 
     address = address.replace(' ','+')
     address = address + ',+San+Francisco,+CA'
-
-        
+      
     url_name = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyClGti21OO4dZ1P-BbQGr-Jezy2qV8zajg'
     url_data = urllib2.urlopen(url_name)
 
@@ -48,6 +48,10 @@ def out():
     data = data.get('location')
     lat  = data.get('lat')
     lng  = data.get('lng')
+
+    notincity = check_in_city(lat,lng)
+    if notincity == 1:
+        return render_template('index.html',ind=9999, t_dat = 'ADDRESS OUTSIDE OF SAN FRANCISCO')
 
     dat      = parse_the_location(lat,lng)
     db_id    = dat.get('db_id')
@@ -103,6 +107,36 @@ def parse_the_location(p_lat,p_lon):
     ind = min(enumerate(p_dist), key=itemgetter(1))[0]
 
     return {'ind':ind,'db_id':db_id,'db_name':db_name,'db_lat':db_lat,'db_lon':db_lon}
+
+def check_in_city(lat,lng):
+    sf = [[37.809812,-122.476634],
+          [37.797346,-122.481910],
+          [37.788471,-122.490044],
+          [37.786681,-122.496047],
+          [37.787849,-122.502443], 
+          [37.785374,-122.510171],
+          [37.780344,-122.514118],
+          [37.772203,-122.514577], 
+          [37.708283,-122.503009],
+          [37.707944,-122.391354],
+          [37.708315,-122.380821], 
+          [37.716061,-122.375920], 
+          [37.715668,-122.365390],
+          [37.728642,-122.358034],
+          [37.739688,-122.368804], 
+          [37.753637,-122.378594], 
+          [37.788308,-122.387641],
+          [37.807490,-122.404791],
+          [37.810019,-122.415333], 
+          [37.804758,-122.462631], 
+          [37.807265,-122.468261]]
+
+    shape = matplotlib.path.Path(sf)
+    if shape.contains_point([lat,lng]):
+        notincity = 0
+    else:
+        notincity = 1
+    return notincity
         
 @app.route('/plot.png')
 def getPlot():
