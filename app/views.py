@@ -64,24 +64,42 @@ def out():
     clo_lat  = db_lat[ind]
     clo_lon  = db_lon[ind]
 
-    if ((37.7651185 > lat > 37.7529621) & (-122.4176042 < lng < -122.4066062)): 
-        t_text  = ('GOOD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n VALUE WILL GO UP $1243 IN 3 MONTHS \n' % (lat,lng))
-        la_data = lat
-        lo_data = lng 
-        valid   = True
-    else:
-        t_text  = ('BAD: YOU ENTERED AN ADDRESS AT %.4f and %.4f\n' % (lat,lng))
+    if ind!=9999: 
+        l_data  = get_point_data(ind)
+        vals    = l_data.get('val')
+        civ     = l_data.get('civ')
+        zid     = l_data.get('zid')
         la_data = lat
         lo_data = lng
         valid   = True
+        t_text  = 'VALUE WILL CHANGE ${0} IN 3 MONTHS ({1}% CI)'.format(vals,civ)
+        out_text = t_text
+        z_str   = "static/pot{0}.png".format(zid)
+    else:
+        t_text  = ('BAD: CANNOT PARSE THIS!')
+        la_data = lat
+        lo_data = lng
+        out_text = t_text
 
-    out_text = ('closest point was {0} <br> with value of {1}'.format(clo_name,clo_vals))
+    print zid
 
     return render_template('index.html',t_dat   = t_text,  la_data  = la_data,  lo_data = lo_data, 
                                         valid   = valid,   out_text = out_text, db_id   = db_id,
                                         db_name = db_name, db_lat   = db_lat,   db_lon  = db_lon,
-                                        ind     = ind)
-	
+                                        ind     = ind,     vals     = vals,     civ     = civ,
+                                        zid     = zid,     z_str    = z_str)
+def get_point_data(ind):
+    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
+    cur  = conn.cursor()
+    cur.execute('SELECT * FROM pricecrime WHERE zip_id={0}'.format(ind))
+    data  = cur.fetchall()
+
+    val = data[0][2]
+    civ = data[0][3]
+    zid = data[0][4]
+
+    return {'val':val,'civ':civ,'zid':zid}
+
 def parse_the_location(p_lat,p_lon):
     conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
     cur  = conn.cursor()
@@ -229,8 +247,6 @@ def getPlot():
         p_title = 'AVERAGE SALE PRICE FOR ALL OF SAN FRANCISCO'
     else:
         p_title = 'AVERAGE SALE PRICE FOR LOCAL NEIGHBORHOOD'
-
-    print n_labels
 
     newdata = [x/1000 for x in data]
 
