@@ -5,7 +5,6 @@ from operator               import itemgetter
 from StringIO               import StringIO
 from dateutil.relativedelta import relativedelta
 
-
 import pymysql
 import sys
 import simplejson
@@ -26,7 +25,6 @@ def index():
 	return render_template('index.html',ind=9999)
         
 @app.route('/out', methods=['POST'])
-
 def out():
     valid = 'False'
 
@@ -89,7 +87,12 @@ def out():
                                         ind     = ind,     vals     = vals,     civ     = civ,
                                         zid     = zid,     z_str    = z_str)
 def get_point_data(ind):
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
+    db_host = app.config['DATABASE_HOST']
+    db_port = app.config['DATABASE_PORT']
+    db_user = app.config['DATABASE_USER']
+    db_pass = app.config['DATABASE_PASSWORD']
+    db_name = app.config['DATABASE_DB']
+    conn = pymysql.connect(host=db_host, port=db_port, user=db_user, passwd=db_pass, db=db_name)
     cur  = conn.cursor()
     cur.execute('SELECT * FROM pricecrime WHERE zip_id={0}'.format(ind))
     data  = cur.fetchall()
@@ -101,7 +104,13 @@ def get_point_data(ind):
     return {'val':val,'civ':civ,'zid':zid}
 
 def parse_the_location(p_lat,p_lon):
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='citydata')
+
+    db_host = app.config['DATABASE_HOST']
+    db_port = app.config['DATABASE_PORT']
+    db_user = app.config['DATABASE_USER']
+    db_pass = app.config['DATABASE_PASSWORD']
+    db_name = app.config['DATABASE_DB']
+    conn = pymysql.connect(host=db_host, port=db_port, user=db_user, passwd=db_pass, db=db_name)
     cur  = conn.cursor()
     cur.execute("SELECT * FROM citypoints")
     data  = cur.fetchall()
@@ -160,13 +169,17 @@ def check_in_city(lat,lng):
 def getPlot():
 
     id         = request.args.get('id_num')
-    db_name    = 'citydata'
     table_name = 'crimedata'
     place_id   = id
 
     # get column names
 
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db=db_name)
+    db_host = app.config['DATABASE_HOST']
+    db_port = app.config['DATABASE_PORT']
+    db_user = app.config['DATABASE_USER']
+    db_pass = app.config['DATABASE_PASSWORD']
+    db_name = app.config['DATABASE_DB']
+    conn = pymysql.connect(host=db_host, port=db_port, user=db_user, passwd=db_pass, db=db_name)
     cur  = conn.cursor()
 
     sql_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE \
@@ -210,13 +223,12 @@ def getPlot():
     ax1.grid(True)
     fig.tight_layout(pad=1) 
 
-    db_name    = 'citydata'
     table_name = 'pricedata'
     place_id   = id
 
     # get column names
 
-    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db=db_name)
+    conn = pymysql.connect(host=db_host, port=db_port, user=db_user, passwd=db_pass, db=db_name)
     cur  = conn.cursor()
 
     sql_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE \
