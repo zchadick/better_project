@@ -17,6 +17,9 @@ import math
 import datetime
 import numpy as np
 import pandas as pd
+
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.path
 
