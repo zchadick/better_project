@@ -67,6 +67,15 @@ spacing  = np.sqrt(lat_span*lon_span/number_points)
 places   = create_points(min_lat,max_lat,min_lon,max_lon,spacing)
 places   = filter_places(places,sf)
 
+# there were some "bounding effects" so adjust min/max's
+
+min_lat = min_lat-spacing
+max_lat = max_lat+spacing
+min_lon = min_lon-spacing
+max_lon = max_lon+spacing
+
+# iterate a solution!
+
 iter_num = 1
 
 while ((len(places)!=number_points) & (iter_num<500)):

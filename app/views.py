@@ -66,7 +66,7 @@ def out():
     clo_lat  = db_lat[ind]
     clo_lon  = db_lon[ind]
 
-    heat_data = get_heatmap_points('crimedb',[2011,8])
+    heat_data = get_heatmap_points('cityprice',[2014,3])
 
     if len(heat_data)!=0:
         plot_heat = True
