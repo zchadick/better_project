@@ -29,17 +29,18 @@ def index():
         
 @app.route('/out', methods=['POST'])
 def out():
-    valid = 'False'
+    valid     = False
+    plot_heat = False
 
-    address = request.form['searchPhrase']
+    address   = request.form['searchPhrase']
             
     # need to add some error checking here
 
-    address = address.replace(' ','+')
-    address = address + ',+San+Francisco,+CA'
+    address   = address.replace(' ','+')
+    address   = address + ',+San+Francisco,+CA'
       
-    url_name = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyClGti21OO4dZ1P-BbQGr-Jezy2qV8zajg'
-    url_data = urllib2.urlopen(url_name)
+    url_name  = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyClGti21OO4dZ1P-BbQGr-Jezy2qV8zajg'
+    url_data  = urllib2.urlopen(url_name)
 
     json_string = url_data.read()
     parsed_json = json.loads(json_string)
@@ -65,6 +66,11 @@ def out():
     clo_lat  = db_lat[ind]
     clo_lon  = db_lon[ind]
 
+    heat_data = get_heatmap_points('crimedb',[2011,8])
+
+    if len(heat_data)!=0:
+        plot_heat = True
+
     if ind!=9999: 
         l_data  = get_point_data(ind)
         vals    = l_data.get('val')
@@ -82,13 +88,12 @@ def out():
         lo_data = lng
         out_text = t_text
 
-    print zid
-
-    return render_template('index.html',t_dat   = t_text,  la_data  = la_data,  lo_data = lo_data, 
-                                        valid   = valid,   out_text = out_text, db_id   = db_id,
-                                        db_name = db_name, db_lat   = db_lat,   db_lon  = db_lon,
-                                        ind     = ind,     vals     = vals,     civ     = civ,
-                                        zid     = zid,     z_str    = z_str)
+    return render_template('index.html',t_dat     = t_text,    la_data  = la_data,  lo_data   = lo_data, 
+                                        valid     = valid,     out_text = out_text, db_id     = db_id,
+                                        db_name   = db_name,   db_lat   = db_lat,   db_lon    = db_lon,
+                                        ind       = ind,       vals     = vals,     civ       = civ,
+                                        zid       = zid,       z_str    = z_str,    heat_data = heat_data,
+                                        plot_heat = plot_heat)
 def get_point_data(ind):
     db_host = app.config['DATABASE_HOST']
     db_port = app.config['DATABASE_PORT']
@@ -107,7 +112,6 @@ def get_point_data(ind):
     return {'val':val,'civ':civ,'zid':zid}
 
 def parse_the_location(p_lat,p_lon):
-
     db_host = app.config['DATABASE_HOST']
     db_port = app.config['DATABASE_PORT']
     db_user = app.config['DATABASE_USER']
@@ -167,6 +171,66 @@ def check_in_city(lat,lng):
     else:
         notincity = 1
     return notincity
+
+def get_heatmap_points(hm_type,hm_date):
+    db_host = app.config['DATABASE_HOST']
+    db_port = app.config['DATABASE_PORT']
+    db_user = app.config['DATABASE_USER']
+    db_pass = app.config['DATABASE_PASSWORD']
+    
+    heat_data  = []
+
+    date_start = datetime.date(hm_date[0],hm_date[1],1)
+    date_end   = date_start + relativedelta(months=1)
+    date_st_s  = str(date_start)
+    date_en_s  = str(date_end)
+    date_str   = 'd'+str(date_start).replace('-','')+'d'
+    
+    if hm_type == 'crimedb':
+        db_name  = 'crimedb'
+        sql_quer = "SELECT typecr, latcr, loncr FROM crimedb1  " \
+                     + "WHERE (datecr>="'"{0}"'" AND datecr<"'"{1}"'");".format(date_st_s,date_en_s)
+    elif hm_type == 'housedb':
+        db_name  = 'housedb'
+        sql_quer = "SELECT price,h_lat,h_long FROM housedb3 " \
+                     + "WHERE (h_date>="'"{0}"'" AND h_date<"'"{1}"'") AND h_room=2;".format(date_st_s,date_en_s)
+    elif hm_type == 'pricecrime':
+        db_name  = 'citydata'
+        sql_quer = "SELECT ZVAL FROM pricecrime WHERE (zip_id<9998);"
+    elif hm_type == 'cityprice':
+        db_name  = 'citydata'
+        sql_quer = "SELECT {0} FROM pricedata WHERE (place_id<9998);".format(date_str)
+    elif hm_type == 'citycrime':
+        db_name  = 'citydata'
+        sql_quer = "SELECT {0} FROM crimedata WHERE (place_id<9998);".format(date_str)
+    else:
+        return heat_data
+
+    conn = pymysql.connect(host=db_host, port=db_port, user=db_user, passwd=db_pass, db=db_name)
+    cur  = conn.cursor()
+    cur.execute(sql_quer)
+    data = cur.fetchall()
+
+    if db_name == 'citydata':
+        sql_quer = "SELECT latitude,longitude FROM citypoints;"
+        conn = pymysql.connect(host=db_host, port=db_port, user=db_user, passwd=db_pass, db=db_name)
+        cur  = conn.cursor()
+        cur.execute(sql_quer)
+        ldat = cur.fetchall()
+
+    for ind in range(0,len(data)):
+        if hm_type == 'crimedb':
+            if data[ind][0] in ['SIMPLE ASSAULT','ROBBERY','AGGRAVATED ASSAULT','ARSON']:
+                heat_data.append([data[ind][1],data[ind][2],10])
+            else:
+                heat_data.append([data[ind][1],data[ind][2],1])
+        elif hm_type == 'housedb':
+            heat_data.append([data[ind][1],data[ind][2],data[ind][0]])
+        else:
+            heat_data.append([ldat[ind][0],ldat[ind][1],data[ind][0]])
+
+    print heat_data[0]
+    return heat_data
         
 @app.route('/plot.png')
 def getPlot():
@@ -309,3 +373,6 @@ def regularpage(pagename=None):
     # Renders author.html.
     return "You've arrived at " + pagename
 
+@app.route('/robots.txt')
+def static_from_root():
+      return send_from_directory(app.static_folder, request.path[1:])
