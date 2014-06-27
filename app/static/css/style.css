@@ -54,3 +54,6 @@ font-family: "Ubuntu", Tahoma, "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 10px;
 }
 
+#ex1Slider .slider-selection {
+  background: #BABABA;
+}

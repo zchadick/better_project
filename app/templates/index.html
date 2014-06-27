@@ -22,20 +22,62 @@
             <div class="form-group">
                 <br>
                 <center>
-                ENTER AN ADDRESS: <input class="form-control" type="text" name="searchPhrase">
-                <input class="btn btn-lg btn-block" type="submit">
+                <label class="control-label" for="onlyform">ENTER AN ADDRESS: </label>
+                <input class="form-control" type="text" name="searchPhrase" placeholder="e.g. 1249 18th Ave" id="onlyform">
+                <input class="btn btn-danger btn-lg btn-block" type="submit">
             </div>
+        
+            <div class="bg-danger" align="center" style="margin-top: 20px;">
+                <label class="radio-inline">
+                  <input checked type="radio" name="inlineRadioOptions"  id="inlineRadio1" value="none"> None
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="housedb"> Price
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="crimedb"> Crime
+                </label>
+            </div>
+
+            <div class="year-selector" align="center" style="margin-top: 20px;">
+                <select class="form-control" id="dropdown" name="dd_year">
+                  <option value="99">Select Year...</option>
+                  <option value="2014">2014</option>
+                  <option value="2013">2013</option>
+                  <option value="2012">2012</option>
+                  <option value="2011">2011</option>
+                </select>
+            </div>
+
+            <div class="month-selector" align="center" style="margin-top: 20px;">
+                <select class="form-control" id="dropdown" name="dd_month">
+                  <option value="99">Select Month...</option>
+                  <option value="1">Jan</option>
+                  <option value="2">Feb</option>
+                  <option value="3">Mar</option>
+                  <option value="4">Apr</option>
+                  <option value="5">May</option>
+                  <option value="6">Jun</option>
+                  <option value="7">Jul</option>
+                  <option value="8">Aug</option>
+                  <option value="9">Sep</option>
+                  <option value="10">Oct</option>
+                  <option value="11">Nov</option>
+                  <option value="12">Dec</option>
+                </select>
+            </div>
+
         </form>
 
         <div>
             <center>
-            <img class="img-responsive img-rounded" src="{{ url_for('getPlot',id_num = ind) }}" style="margin-left:auto;margin-right:auto;"/>
-
-            {% if t_dat %}
-                <div style="background-color:white;">
-                    <p><center>{{t_dat}}</p>
-                </div>
-            {% endif %}
+                {% if t_dat %}
+                    <div>
+                        <p class="bg-danger" style="margin-top: 20px;">{{t_dat}}</p>
+                    </div>
+                {% endif %}
+                <img class="img-responsive img-rounded" src="{{ url_for('getPlot',id_num = ind) }}" style="margin-left:auto;margin-right:auto; margin-top: 20px;"/>
+            </center>
         </div>
 
     </div>
@@ -143,4 +185,10 @@
 
 {% block footer %}
   {% include "include/footer.html" %}
+{% endblock %}
+
+
+{% block scripts %}
+
+
 {% endblock %}

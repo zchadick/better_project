@@ -33,6 +33,11 @@ def out():
     plot_heat = False
 
     address   = request.form['searchPhrase']
+    button_v  = request.form['inlineRadioOptions']
+    month_in  = request.form['dd_month']
+    year_in   = request.form['dd_year']
+
+    print address
             
     # need to add some error checking here
 
@@ -72,20 +77,20 @@ def out():
         plot_heat = True
 
     if ind!=9999: 
-        l_data  = get_point_data(ind)
-        vals    = l_data.get('val')
-        civ     = l_data.get('civ')
-        zid     = l_data.get('zid')
-        la_data = lat
-        lo_data = lng
-        valid   = True
-        t_text  = 'VALUE WILL CHANGE ${0} IN 3 MONTHS ({1}% CI)'.format(vals,civ)
+        l_data   = get_point_data(ind)
+        vals     = l_data.get('val')
+        civ      = l_data.get('civ')
+        zid      = l_data.get('zid')
+        la_data  = lat
+        lo_data  = lng
+        valid    = True
+        t_text   = 'VALUE WILL CHANGE ${0} IN 3 MONTHS ({1}%)'.format(vals,civ)
         out_text = t_text
-        z_str   = "static/pot{0}.png".format(zid)
+        z_str    = "static/pot{0}.png".format(zid)
     else:
-        t_text  = ('BAD: CANNOT PARSE THIS!')
-        la_data = lat
-        lo_data = lng
+        t_text   = ('BAD: CANNOT PARSE THIS!')
+        la_data  = lat
+        lo_data  = lng
         out_text = t_text
 
     return render_template('index.html',t_dat     = t_text,    la_data  = la_data,  lo_data   = lo_data, 
@@ -229,7 +234,6 @@ def get_heatmap_points(hm_type,hm_date):
         else:
             heat_data.append([ldat[ind][0],ldat[ind][1],data[ind][0]])
 
-    print heat_data[0]
     return heat_data
         
 @app.route('/plot.png')
