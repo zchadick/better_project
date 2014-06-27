@@ -105,31 +105,21 @@
                 infoWindow.open(map);
             {% endif %}
 
+            var edge_dat = [
+                    {% for tmp in sfpoints %}
+                         [{{tmp[0]}},{{tmp[1]}}],
+                    {% endfor %}
+                    ];
 
-            var sfpat = [new google.maps.LatLng(37.809812,-122.476634),
-                new google.maps.LatLng(37.797346,-122.481910),
-                new google.maps.LatLng(37.788471,-122.490044),
-                new google.maps.LatLng(37.786681,-122.496047),
-                new google.maps.LatLng(37.787849,-122.502443),
-                new google.maps.LatLng(37.785374,-122.510171),
-                new google.maps.LatLng(37.780344,-122.514118),
-                new google.maps.LatLng(37.772203,-122.514577),
-                new google.maps.LatLng(37.708283,-122.503009),
-                new google.maps.LatLng(37.707944,-122.391354),
-                new google.maps.LatLng(37.708315,-122.380821),
-                new google.maps.LatLng(37.716061,-122.375920),
-                new google.maps.LatLng(37.715668,-122.365390),
-                new google.maps.LatLng(37.728642,-122.358034),
-                new google.maps.LatLng(37.739688,-122.368804),
-                new google.maps.LatLng(37.753637,-122.378594),
-                new google.maps.LatLng(37.788308,-122.387641),
-                new google.maps.LatLng(37.807490,-122.404791),
-                new google.maps.LatLng(37.810019,-122.415333),
-                new google.maps.LatLng(37.804758,-122.462631),
-                new google.maps.LatLng(37.807265,-122.468261)];
+            var city_dat = [];
+
+            for (i = 0; i < edge_dat.length; i++) {
+                var new_dat = new google.maps.LatLng(edge_dat[i][0],edge_dat[i][1]);
+                city_dat.push(new_dat);
+                };
 
             var shape = new google.maps.Polygon({
-                paths: sfpat,
+                paths: city_dat,
                 strokeColor: '#ff0000',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
