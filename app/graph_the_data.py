@@ -3,7 +3,6 @@ import matplotlib
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
-import matplotlib.path
 
 from app      import app
 from StringIO import StringIO

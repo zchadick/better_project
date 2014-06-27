@@ -1,9 +1,6 @@
 from flask                  import render_template, _app_ctx_stack, jsonify, request, send_file
 from app                    import app, host, port, user, passwd, db
 from app.helpers.database   import con_db
-from operator               import itemgetter
-from StringIO               import StringIO
-from dateutil.relativedelta import relativedelta
 
 # fix these guys... must be a quick fix
 
@@ -13,23 +10,8 @@ from get_point_data         import get_point_data
 from parse_the_location     import parse_the_location
 from graph_the_data         import graph_the_data
 
-import pymysql
-import sys
-import simplejson
 import urllib2
 import json
-import math
-import jinja2
-import matplotlib
-import math
-import datetime
-import numpy  as np
-import pandas as pd
-
-matplotlib.use('Agg')
-
-import matplotlib.pyplot as plt
-import matplotlib.path
 
 # render initial template
 
@@ -50,7 +32,7 @@ def out():
     hm_type   = request.form['inlineRadioOptions']
     month_in  = request.form['dd_month']
     year_in   = request.form['dd_year']
-            
+
     # search for the address location
 
     address   = address.replace(' ','+')
@@ -73,7 +55,9 @@ def out():
     sfpoints  = citycheck.get('sfpoints') # outline of the city
     
     if citycheck.get('notincity') == 1: # check if lat/lng location is within SF
-        return render_template('index.html',ind=9999,t_dat = 'ADDRESS OUTSIDE OF SAN FRANCISCO',sfpoints = sfpoints)
+        return render_template('index.html',ind      = 9999,
+                                            t_dat    = 'ADDRESS OUTSIDE OF SAN FRANCISCO',
+                                            sfpoints = sfpoints)
 
     dat      = parse_the_location(lat,lng)
     db_id    = dat.get('db_id')
@@ -86,10 +70,17 @@ def out():
     clo_lat  = db_lat[ind]
     clo_lon  = db_lon[ind]
 
-    heat_data = get_heatmap_points('crimedb',2012,5)
+    # generate heat-map data (if requested)
+
+    if hm_type!='none' and year_in!=99 and month_in!=99:
+        heat_data = get_heatmap_points(hm_type,int(year_in),int(month_in))
+    else:
+        heat_data = []
 
     if len(heat_data)!=0:
         plot_heat = True
+
+    # format prediction screen
 
     if ind!=9999: 
         l_data   = get_point_data(ind)
@@ -123,19 +114,12 @@ def getPlot():
     img    = graph_the_data(id_dat)
     return send_file(img, mimetype='image/png')  
 
-@app.route('/home')
-def home():
-    # Renders home.html.
-    return render_template('home.html')
-
 @app.route('/slides')
 def about():
-    # Renders slides.html.
     return render_template('slides.html')
 
 @app.route('/author')
 def contact():
-    # Renders author.html.
     return render_template('author.html')
 
 @app.errorhandler(404)
@@ -148,7 +132,6 @@ def internal_error(error):
 
 @app.route('/<pagename>')
 def regularpage(pagename=None):
-    # Renders author.html.
     return "You've arrived at " + pagename + " ... have you considered NOT typing a 'special' page?"
 
 @app.route('/robots.txt')
