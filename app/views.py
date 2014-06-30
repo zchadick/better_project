@@ -1,14 +1,14 @@
-from flask                  import render_template, _app_ctx_stack, jsonify, request, send_file
-from app                    import app, host, port, user, passwd, db
-from app.helpers.database   import con_db
+from flask                 import render_template, _app_ctx_stack, jsonify, request, send_file
+from app                   import app, host, port, user, passwd, db
+from app.helpers.database  import con_db
 
 # fix these guys... must be a quick fix
 
-from get_heatmap_points     import get_heatmap_points
-from check_in_city          import check_in_city
-from get_point_data         import get_point_data
-from parse_the_location     import parse_the_location
-from graph_the_data         import graph_the_data
+from app.helpers.get_heatmap_points  import get_heatmap_points
+from app.helpers.check_in_city       import check_in_city
+from app.helpers.get_point_data      import get_point_data
+from app.helpers.parse_the_location  import parse_the_location
+from app.helpers.graph_the_data      import graph_the_data
 
 import urllib2
 import json
@@ -45,11 +45,12 @@ def out():
     json_string = url_data.read()
     parsed_json = json.loads(json_string)
 
-    data = parsed_json['results'][0]
-    data = data.get('geometry')
-    data = data.get('location')
-    lat  = data.get('lat')
-    lng  = data.get('lng')
+    data1 = parsed_json['results'][0]
+    data2 = data1.get('geometry')
+    data3 = data2.get('location')
+    lat   = data3.get('lat')
+    lng   = data3.get('lng')
+    f_add = data1.get('formatted_address')
 
     citycheck = check_in_city(lat,lng)
     sfpoints  = citycheck.get('sfpoints') # outline of the city
