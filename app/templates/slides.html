@@ -26,6 +26,10 @@
 
 {% endblock %}
 
+{% block footer %}
+  {% include "include/footer.html" %}
+{% endblock %}
+
 {% block scripts %}
   <!-- Presentation Libraries -->
   <script src="{{ url_for('static', filename='vendor/components-revealjs/lib/js/head.min.js') }}"></script>
